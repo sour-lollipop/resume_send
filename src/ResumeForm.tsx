@@ -5,11 +5,54 @@ interface ResumeFormProps {
 }
 
 interface FormData {
-  fullName: string;
   desiredPosition: string;
+  fullName: string;
   photo: string | null;
   birthDate: string;
-  birthPlace: string;
+  birthPlace: string[];
+  maritalStatus: string;
+  children: string;
+  height: number;
+  weight: number;
+  
+  city_res: string;
+  current_loc: string;
+  nationality:string;
+  citizenship: string;
+  travel_p: boolean;
+  covid_p: boolean;
+  
+  mobile: number;
+  messenger: string;
+  email: string;
+  facebook: string;
+  instagram: string;
+  linkedin: string;
+  Vkontakte: string;
+
+  rel_name: string;
+  relationship: string;
+  rel_mobile: number;
+  dad_name: string;
+  mom_name: string;
+
+  country_work: string;
+// Education
+  degree: string;
+  university: string;
+  area_specific: string;
+  years:string;
+
+  degree2: string;
+  university2: string;
+  area_specific2: string;
+  years2:string;
+
+  seminar_year: string;
+  seminar_name: string;
+  seminar_period: string;
+  
+// Work
   workExperience: string[];
   englishLevel: string;
   consent: boolean;
@@ -17,11 +60,53 @@ interface FormData {
 
 const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
   const [formData, setFormData] = React.useState<FormData>({
-    fullName: '',
     desiredPosition: '',
+    fullName: '',
     photo: null,
     birthDate: '',
-    birthPlace: '',
+    birthPlace:[''],
+    maritalStatus:'',
+    children: '',
+    height: 0,
+    weight: 0,
+    
+    city_res:'',
+    current_loc:'',
+    nationality: '',
+    citizenship:'',
+    travel_p:false,
+    covid_p:false,
+    
+    mobile:0,
+    messenger:'',
+    email: '',
+    facebook: '',
+    instagram: '',
+    linkedin: '',
+    Vkontakte: '',
+
+    rel_name: '',
+    relationship: '',
+    rel_mobile: 0,
+    dad_name: '',
+    mom_name: '',
+
+    country_work: '',
+// Education
+    degree:'',
+    university:'',
+    area_specific:'',
+    years:'',
+  
+    degree2:'',
+    university2:'',
+    area_specific2:'',
+    years2:'',
+
+    seminar_year: '',
+    seminar_name: '',
+    seminar_period: '',
+
     workExperience: [''],
     englishLevel: '',
     consent: false,
