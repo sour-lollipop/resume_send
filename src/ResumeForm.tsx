@@ -10,6 +10,8 @@ interface FormData {
   desiredPosition: string;
   fullName: string;
   photo: string | null;
+  photo2: string | null;
+  photo3: string | null;
   birthDate: string;
   birthPlace: string[];
   maritalStatus: string;
@@ -92,6 +94,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
     desiredPosition: "",
     fullName: "",
     photo: null,
+    photo2: null,
+    photo3: null,
     birthDate: "",
     birthPlace: [""],
     maritalStatus: "",
@@ -181,8 +185,29 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
     const file = e.target.files && e.target.files[0];
     if (file) {
       handleChange("photo", URL.createObjectURL(file));
+      console.log('Photo',URL.createObjectURL(file))
     } else {
       handleChange("photo", null);
+    }
+  };
+
+  const handleFileChange2 = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files && e.target.files[0];
+    if (file) {
+      handleChange("photo2", URL.createObjectURL(file));
+      console.log('Photo2',URL.createObjectURL(file))
+    } else {
+      handleChange("photo2", null);
+    }
+  };
+
+  const handleFileChange3 = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files && e.target.files[0];
+    if (file) {
+      handleChange("photo3", URL.createObjectURL(file));
+      console.log('Photo3',URL.createObjectURL(file))
+    } else {
+      handleChange("photo3", null);
     }
   };
 
@@ -221,6 +246,25 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
           <p>Добавьте свое фото , по примеру данной картинки :</p>
           <img src={img1} width={130} height={200} />
           <input type="file" accept="image/*" onChange={handleFileChange} />
+        </label>
+      </div>
+      <br />
+
+      <div className="img_add">
+        <label>
+          <p>Добавьте свое фото , по примеру данной картинки :</p>
+          <img src={img2} width={150} height={200} />
+          <input type="file" accept="image/*" onChange={handleFileChange2} />
+        </label>
+      </div>
+
+      <br />
+
+      <div className="img_add">
+        <label>
+          <p>Добавьте свое фото , по примеру данной картинки :</p>
+          <img src={img3} width={130} height={250} />
+          <input type="file" accept="image/*" onChange={handleFileChange3} />
         </label>
       </div>
 
