@@ -60,6 +60,8 @@ interface FormData {
   seminar_period: string;
 
   tattoo_piersing_discribe: string;
+  tattoo_piercing_photos: (string | null)[];
+  
   // Work
   workPosition: string;
   workLocation: string;
@@ -144,6 +146,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
     seminar_period: "",
 
     tattoo_piersing_discribe: "",
+    tattoo_piercing_photos: [null, null, null],
 
     // Work
     workPosition: "",
@@ -211,6 +214,24 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
     }
   };
 
+
+  const handleFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+
+    if (files) {
+      const urls: string[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        urls.push(URL.createObjectURL(file));
+      }
+      handleChange('tattoo_piercing_photos', urls);
+      console.log('tattoo_piercing_photos',urls)
+    } else {
+      handleChange('tattoo_piercing_photos', []);
+    }
+  };
+
+
   const handleSubmit = () => {
     if (formData.consent) {
       onSubmit(formData);
@@ -257,7 +278,6 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
           <input type="file" accept="image/*" onChange={handleFileChange2} />
         </label>
       </div>
-
       <br />
 
       <div className="img_add">
@@ -582,6 +602,14 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
         />
       </label>
       <br />
+      <div className="img_add">
+      <label>
+        <p>Добавьте свои фотографии пирсинга или татуировок:</p>
+        <input type="file" accept="image/*" onChange={handleFilesChange} multiple />
+      </label>
+    </div>
+    <br />
+
       <h3>Опыт работы</h3>
       <label>
       Должность:
