@@ -2,6 +2,7 @@ import React,{useState} from "react";
 import img1 from "./Images/photo1.jpg";
 import img2 from "./Images/photo2.jpg";
 import img3 from "./Images/photo3.jpg";
+import axios from 'axios';
 interface ResumeFormProps {
   onSubmit: (formData: FormData) => void;
 }
@@ -202,11 +203,35 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
     setFormData((prevData) => ({ ...prevData, [key]: value }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files && e.target.files[0];
+    // console.log(file)
+    // if (file) {
+    //   handleChange("photo", URL.createObjectURL(file));
+    //   console.log('Photo',URL.createObjectURL(file))
+    // } else {
+    //   handleChange("photo", null);
+    // }
     if (file) {
-      handleChange("photo", URL.createObjectURL(file));
-      console.log('Photo',URL.createObjectURL(file))
+      try {
+        const formDataToSend = new FormData();
+        formDataToSend.append("file", file);
+
+        const response = await axios.post("https://lis.4dev.kz/upload", formDataToSend, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        if (response.status === 200) {
+          const imageUrl = response.data; // Проверьте, какое поле содержит URL изображения
+          handleChange("photo", imageUrl);
+        } else {
+          console.error("Ошибка при загрузке изображения");
+        }
+      } catch (error) {
+        console.error("Ошибка при загрузке изображения:", error);
+      }
     } else {
       handleChange("photo", null);
     }
