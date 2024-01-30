@@ -47,3 +47,11 @@
   display: grid;
   grid-template-columns: 90% 10%;
 }
+.resume-form {
+.redBG{
+  background-color: rgb(172, 6, 6);
+}
+.red{
+  color: rgb(196, 0, 0);
+}
+}

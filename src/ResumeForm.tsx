@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import img1 from "./Images/photo1.jpg";
 import img2 from "./Images/photo2.jpg";
 import img3 from "./Images/photo3.jpg";
@@ -110,7 +110,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
     birthDate: "",
     birthPlaceCountry: "",
     birthPlaceCity: "",
-    maritalStatus: "",
+    maritalStatus: "married",
     children: "",
     height: 0,
     weight: 0,
@@ -186,12 +186,12 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
     driver_license: "no",
     car_category: "",
 
-    russianLevel: "",
-    englishLevel: "",
+    russianLevel: "Basic",
+    englishLevel: "Basic",
     otherLang: "",
-    otherLevel: "",
+    otherLevel: "Basic",
     job_sroke: "",
-    how_knaws: "",
+    how_knaws: "Google",
     consent: false,
   });
 
@@ -249,6 +249,9 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
     }
   };
 
+
+  const [addEducation, setAddEducation] = useState(false);
+  const [addWork, setAddWork] = useState(1);
 
   const handleSubmit = async  () => {
     if (formData.consent) {
@@ -382,9 +385,10 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <label>
         Рост:
         <input
-          type="text"
-          value={formData.height}
+          type="number"
+          // value={formData.height}
           onChange={(e) => handleChange("height", e.target.value)}
+          placeholder="cm"
         />
       </label>
       <br />
@@ -392,9 +396,10 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <label>
         Вес:
         <input
-          type="text"
-          value={formData.weight}
+          type="number"
+          // value={formData.weight}
           onChange={(e) => handleChange("weight", e.target.value)}
+          placeholder="kg"
         />
       </label>
       <br />
@@ -467,9 +472,10 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <label>
         Номер мобильного телефона:
         <input
-          type="text"
-          value={formData.mobile}
+          type="number"
+          // value={formData.mobile}
           onChange={(e) => handleChange("mobile", e.target.value)}
+          placeholder="87776665544"
         />
       </label>
       <br />
@@ -558,8 +564,9 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <label>
       Номер мобильного:
         <input
-          type="text"
-          value={formData.rel_mobile}
+          type="number"
+          placeholder="87776665544"
+          // value={formData.rel_mobile}
           onChange={(e) => handleChange("rel_mobile", e.target.value)}
         />
       </label>
@@ -669,6 +676,53 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
           onChange={(e) => handleChange("years", e.target.value)}
         />
       </label>
+      {addEducation?
+      (<>
+      <h3>Образование 2</h3>
+       <label>
+      Сертификат/степень оброзования:
+        <input
+          type="text"
+          value={formData.degree2}
+          onChange={(e) => handleChange("degree2", e.target.value)}
+        />
+      </label>
+      <br />
+
+      <label>
+      Наименование колледжа или университета:
+        <input
+          type="text"
+          value={formData.university2}
+          onChange={(e) => handleChange("university2", e.target.value)}
+        />
+      </label>
+      <br />
+
+      <label>
+      Специализация:
+        <input
+          type="text"
+          value={formData.area_specific2}
+          onChange={(e) => handleChange("area_specific2", e.target.value)}
+        />
+      </label>
+      <br />
+
+      <label>
+      Начало-конец оброзованияя:
+        <input
+          type="text"
+          value={formData.years2}
+          onChange={(e) => handleChange("years2", e.target.value)}
+        />
+      </label>
+      <button onClick={()=>{setAddEducation(false)}} className="redBG">Убрать</button>
+
+      </>):(
+      <button onClick={()=>{setAddEducation(true)}}>Добавить еще</button>
+      )
+      }
       <br />
 
       <h3>Посещенные семинары/обучение/пройденные краткосрочные курсы:</h3>
@@ -766,6 +820,118 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
           onChange={(e) => handleChange("workTime", e.target.value)}
         />
       </label>
+      {addWork>=2?(
+        <>
+              <h3>Опыт работы 2</h3>
+      <label>
+      Должность:
+        <input
+          type="text"
+          value={formData.workPosition2}
+          onChange={(e) => handleChange("workPosition2", e.target.value)}
+        />
+      </label>
+      <br />
+
+      <label>
+      Обязанности:
+        <input
+          type="text"
+          value={formData.workResponsibilities2}
+          onChange={(e) => handleChange("workResponsibilities2", e.target.value)}
+        />
+      </label>
+      <br />
+
+      <label>
+      Название компании:
+        <input
+          type="text"
+          value={formData.workName2}
+          onChange={(e) => handleChange("workName2", e.target.value)}
+        />
+      </label>
+      <br />
+
+      <label>
+      Местоположение компании:
+        <input
+          type="text"
+          value={formData.workLocation2}
+          onChange={(e) => handleChange("workLocation2", e.target.value)}
+        />
+      </label>
+      <br />
+
+      <label>
+      Дата начало-конца работы:
+        <input
+          type="text"
+          value={formData.workTime2}
+          onChange={(e) => handleChange("workTime2", e.target.value)}
+        />
+      </label>
+      {addWork==2?(
+      <button onClick={() =>{setAddWork(addWork-1)}} className="redBG">Убрать</button>
+
+      ):null}
+        </>
+      ):null}
+      {addWork<3?(
+      <button onClick={() =>{setAddWork(addWork+1)}}>Добавить еще</button>
+      ):<>
+            <h3>Опыт работы 3</h3>
+      <label>
+      Должность:
+        <input
+          type="text"
+          value={formData.workPosition3}
+          onChange={(e) => handleChange("workPosition3", e.target.value)}
+        />
+      </label>
+      <br />
+
+      <label>
+      Обязанности:
+        <input
+          type="text"
+          value={formData.workResponsibilities3}
+          onChange={(e) => handleChange("workResponsibilities3", e.target.value)}
+        />
+      </label>
+      <br />
+
+      <label>
+      Название компании:
+        <input
+          type="text"
+          value={formData.workName3}
+          onChange={(e) => handleChange("workName3", e.target.value)}
+        />
+      </label>
+      <br />
+
+      <label>
+      Местоположение компании:
+        <input
+          type="text"
+          value={formData.workLocation3}
+          onChange={(e) => handleChange("workLocation3", e.target.value)}
+        />
+      </label>
+      <br />
+
+      <label>
+      Дата начало-конца работы:
+        <input
+          type="text"
+          value={formData.workTime3}
+          onChange={(e) => handleChange("workTime3", e.target.value)}
+        />
+      </label>
+      <button onClick={() =>{setAddWork(addWork-1)}} className="redBG">Убрать</button>
+      </>
+      }
       <br />
 
 
@@ -846,14 +1012,13 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
           value={formData.englishLevel}
           onChange={(e) => handleChange("englishLevel", e.target.value)}
         >
-          <option value="">Выберите уровень</option>
-          <option value="A1">A1</option>
-          <option value="A2">A2</option>
-          <option value="B1">B1</option>
-          <option value="B2">B2</option>
-          <option value="C1">C1</option>
-          <option value="C2">C2</option>
-          <option value="native">Носитель</option>
+          <option value="Basic">A1</option>
+          <option value="Elementary">A2</option>
+          <option value="Lower Intermediate">B1</option>
+          <option value="Intermediate">B2</option>
+          <option value="Upper Intermediate">C1</option>
+          <option value="Advanced">C2</option>
+          <option value="Native">Носитель</option>
         </select>
       </label>
       <br />
@@ -863,14 +1028,13 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
         value={formData.russianLevel}
         onChange={(e) => handleChange("russianLevel", e.target.value)}
         >
-          <option value="">Выберите уровень</option>
-          <option value="A1">A1</option>
-          <option value="A2">A2</option>
-          <option value="B1">B1</option>
-          <option value="B2">B2</option>
-          <option value="C1">C1</option>
-          <option value="C2">C2</option>
-          <option value="native">Носитель</option>
+          <option value="Basic">A1</option>
+          <option value="Elementary">A2</option>
+          <option value="Lower Intermediate">B1</option>
+          <option value="Intermediate">B2</option>
+          <option value="Upper Intermediate">C1</option>
+          <option value="Advanced">C2</option>
+          <option value="Native">Носитель</option>
         </select>
       </label>
       <br />
@@ -890,14 +1054,13 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
         value={formData.otherLevel}
         onChange={(e) => handleChange("otherLevel", e.target.value)}
         >
-          <option value="">Выберите уровень</option>
-          <option value="A1">A1</option>
-          <option value="A2">A2</option>
-          <option value="B1">B1</option>
-          <option value="B2">B2</option>
-          <option value="C1">C1</option>
-          <option value="C2">C2</option>
-          <option value="native">Носитель</option>
+          <option value="Basic">A1</option>
+          <option value="Elementary">A2</option>
+          <option value="Lower Intermediate">B1</option>
+          <option value="Intermediate">B2</option>
+          <option value="Upper Intermediate">C1</option>
+          <option value="Advanced">C2</option>
+          <option value="Native">Носитель</option>
         </select>
       </label>
       <br />
@@ -908,7 +1071,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
         value={formData.how_knaws}
         onChange={(e) => handleChange("how_knaws", e.target.value)}
         >
-          <option value="">Google поисковик</option>
+          <option value="Google">Google поисковик</option>
           <option value="Facebook">Facebook</option>
           <option value="Instagram">Instagram</option>
           <option value="Vk">Vk.com</option>
@@ -928,9 +1091,9 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       </label>
       <br />
 
-      <h3>Важная информация для кандидата:</h3>
+      <h3 className="red">Важная информация для кандидата:</h3>
       <p>
-      Отправляя данную анкету, я даю согласие на обработку моих персональных данных.
+      <span style={{fontWeight:600}}>Отправляя данную анкету, я даю согласие на обработку моих персональных данных.</span>
       <br />
       Я понимаю и согласен с тем, что агентство вправе отказать мне в прохождении интервью с тем или иным
 работодателем, поскольку представляет интересы последних по подбору персонала.
@@ -943,7 +1106,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       2. Отказ после утверждения работодателем моей кандидатуры.
       </p>
       <div className="check">
-        <label>Согласие на обработку данных:</label>
+        <label style={{fontWeight:600}}>Согласие на обработку данных:</label>
         <input
           type="checkbox"
           checked={formData.consent}
