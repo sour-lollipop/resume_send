@@ -13,7 +13,8 @@ interface FormData {
   photo2: string | null;
   photo3: string | null;
   birthDate: string;
-  birthPlace: string[];
+  birthPlaceCountry:string;
+  birthPlaceCity:string;
   maritalStatus: string;
   children: string;
   height: number;
@@ -67,24 +68,32 @@ interface FormData {
   workLocation: string;
   workName: string;
   workResponsibilities: string;
+  workTime:string;
 
   workPosition2: string;
   workLocation2: string;
   workName2: string;
   workResponsibilities2: string;
+  workTime2:string;
 
   workPosition3: string;
   workLocation3: string;
   workName3: string;
   workResponsibilities3: string;
+  workTime3:string;
 
-  comp_program: string;
+  host_program:  string;
+  finance_program:  string;
+  travel_program:  string;
+  graph_program:  string;
+  other_program:  string;
 
   driver_license: string;
   car_category: string;
 
   russianLevel: string;
   englishLevel: string;
+  otherLang: string;
   otherLevel: string;
   job_sroke: string;
   how_knaws: string;
@@ -99,7 +108,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
     photo2: null,
     photo3: null,
     birthDate: "",
-    birthPlace: [""],
+    birthPlaceCountry: "",
+    birthPlaceCity: "",
     maritalStatus: "",
     children: "",
     height: 0,
@@ -126,10 +136,10 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
     dad_name: "",
     mom_name: "",
 
-    qatar_work: "",
-    uae_work: "",
-    bahrain_work: "",
-    oman_work: "",
+    qatar_work: "no",
+    uae_work: "no",
+    bahrain_work: "no",
+    oman_work: "no",
     // Education
     degree: "",
     university: "",
@@ -153,24 +163,32 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
     workLocation: "",
     workName: "",
     workResponsibilities: "",
+    workTime:'',
 
     workPosition2: "",
     workLocation2: "",
     workName2: "",
     workResponsibilities2: "",
+    workTime2:'',
 
     workPosition3: "",
     workLocation3: "",
     workName3: "",
     workResponsibilities3: "",
+    workTime3:'',
 
-    comp_program: "",
+    host_program: "",
+    finance_program: "",
+    travel_program: "",
+    graph_program: "",
+    other_program: "",
 
-    driver_license: "",
+    driver_license: "no",
     car_category: "",
 
     russianLevel: "",
     englishLevel: "",
+    otherLang: "",
     otherLevel: "",
     job_sroke: "",
     how_knaws: "",
@@ -232,9 +250,28 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
   };
 
 
-  const handleSubmit = () => {
+  const handleSubmit = async  () => {
     if (formData.consent) {
       onSubmit(formData);
+      try {
+        const response = await fetch("http://localhost:8000/submit_resume", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
+  
+        if (response.ok) {
+          console.log("Данные успешно отправлены");
+          // Можно добавить дополнительные действия после успешной отправки
+        } else {
+          console.error("Можно обработать ошибку","Ошибка при отправке данных");
+          // Можно обработать ошибку, например, показать сообщение об ошибке пользователю
+        }
+      } catch (error) {
+        console.error("Ошибка при отправке данных:", error);
+      }
       console.log(formData);
     } else {
       alert("Вы должны согласиться на обработку данных.");
@@ -304,6 +341,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
         Страна рождения:
         <input
           type="text"
+          value={formData.birthPlaceCountry}
+          onChange={(e) => handleChange("birthPlaceCountry", e.target.value)}
         />
       </label>
       <br />
@@ -312,15 +351,20 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
         Город или поселок рождения:
         <input
           type="text"
+          value={formData.birthPlaceCity}
+          onChange={(e) => handleChange("birthPlaceCity", e.target.value)}
         />
       </label>
       <br />
 
       <label>
         Семейное положение:
-        <select>
-          <option>Замужем</option>
-          <option>Незамужем</option>
+        <select
+        value={formData.maritalStatus}
+        onChange={(e) => handleChange("maritalStatus", e.target.value)}
+        >
+          <option value={"married"}>Замужем</option>
+          <option value={"not_married"}>Незамужем</option>
         </select>
       </label>
       <br />
@@ -329,6 +373,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
         Наличие детей:
         <input
           type="text"
+          value={formData.children}
+          onChange={(e) => handleChange("children", e.target.value)}
         />
       </label>
       <br />
@@ -337,6 +383,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
         Рост:
         <input
           type="text"
+          value={formData.height}
+          onChange={(e) => handleChange("height", e.target.value)}
         />
       </label>
       <br />
@@ -345,6 +393,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
         Вес:
         <input
           type="text"
+          value={formData.weight}
+          onChange={(e) => handleChange("weight", e.target.value)}
         />
       </label>
       <br />
@@ -353,6 +403,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
         Город проживания:
         <input
           type="text"
+          value={formData.city_res}
+          onChange={(e) => handleChange("city_res", e.target.value)}
         />
       </label>
       <br />
@@ -361,6 +413,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
         Текущее местоположение:
         <input
           type="text"
+          value={formData.current_loc}
+          onChange={(e) => handleChange("current_loc", e.target.value)}
         />
       </label>
       <br />
@@ -369,6 +423,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
         Национальность:
         <input
           type="text"
+          value={formData.nationality}
+          onChange={(e) => handleChange("nationality", e.target.value)}
         />
       </label>
       <br />
@@ -377,24 +433,33 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
         Гражданство:
         <input
           type="text"
+          value={formData.citizenship}
+          onChange={(e) => handleChange("citizenship", e.target.value)}
         />
       </label>
       <br />
 
       <label>
         У вас есть заграничный паспорт?
-        <select>
-          <option>Нет</option>
-          <option>Да</option>
+        
+        <select
+          value="no"
+          onChange={(e) => handleChange("travel_p", e.target.value === 'yes'? true: false)}
+        >
+          <option value="no">Нет</option>
+          <option value="yes">Да</option>
         </select>
       </label>
       <br />
 
       <label>
       Ты получил COVID-19 вакцину?
-        <select>
-          <option>Нет</option>
-          <option>Да</option>
+        <select
+         value="no"
+         onChange={(e) => handleChange("covid_p", e.target.value === 'yes'? true: false)}
+        >
+          <option  value="no">Нет</option>
+          <option  value="yes">Да</option>
         </select>
       </label>
       <br />
@@ -403,6 +468,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
         Номер мобильного телефона:
         <input
           type="text"
+          value={formData.mobile}
+          onChange={(e) => handleChange("mobile", e.target.value)}
         />
       </label>
       <br />
@@ -411,6 +478,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
         Мессенджеры Whatsapp/viber/telegram:
         <input
           type="text"
+          value={formData.messenger}
+          onChange={(e) => handleChange("messenger", e.target.value)}
         />
       </label>
       <br />
@@ -419,6 +488,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
         E-mail адресс:
         <input
           type="text"
+          value={formData.email}
+          onChange={(e) => handleChange("email", e.target.value)}
         />
       </label>
       <br />
@@ -427,6 +498,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       Facebook:
         <input
           type="text"
+          value={formData.facebook}
+          onChange={(e) => handleChange("facebook", e.target.value)}
         />
       </label>
       <br />
@@ -435,6 +508,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       Instagram:
         <input
           type="text"
+          value={formData.instagram}
+          onChange={(e) => handleChange("instagram", e.target.value)}
         />
       </label>
       <br />
@@ -443,6 +518,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       Linkedin:
         <input
           type="text"
+          value={formData.linkedin}
+          onChange={(e) => handleChange("linkedin", e.target.value)}
         />
       </label>
       <br />
@@ -452,6 +529,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       :
         <input
           type="text"
+          value={formData.Vkontakte}
+          onChange={(e) => handleChange("Vkontakte", e.target.value)}
         />
       </label>
       <br />
@@ -460,6 +539,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       Имя:
         <input
           type="text"
+          value={formData.rel_name}
+          onChange={(e) => handleChange("rel_name", e.target.value)}
         />
       </label>
       <br />
@@ -468,6 +549,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       Кем он(а) вам приходится ?
         <input
           type="text"
+          value={formData.relationship}
+          onChange={(e) => handleChange("relationship", e.target.value)}
         />
       </label>
       <br />
@@ -476,6 +559,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       Номер мобильного:
         <input
           type="text"
+          value={formData.rel_mobile}
+          onChange={(e) => handleChange("rel_mobile", e.target.value)}
         />
       </label>
       <br />
@@ -484,6 +569,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       Имя вашего отца:
         <input
           type="text"
+          value={formData.dad_name}
+          onChange={(e) => handleChange("dad_name", e.target.value)}
         />
       </label>
       <br />
@@ -492,42 +579,53 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       Имя вашей матери:
         <input
           type="text"
+          value={formData.mom_name}
+          onChange={(e) => handleChange("mom_name", e.target.value)}
         />
       </label>
       <br />
     <h3>Предпочтительные страны для переезда и работы:</h3>
       <label>
       Катар
-        <select>
-          <option>Нет</option>
-          <option>Да</option>
+        <select
+        value={formData.qatar_work}
+        onChange={(e) => handleChange("qatar_work", e.target.value)}
+        >
+          <option value='no'>Нет</option>
+          <option value='yes'>Да</option>
         </select>
       </label>
       <br />
 
       <label>
       ОАЭ
-        <select>
-          <option>Нет</option>
-          <option>Да</option>
+        <select
+        value={formData.uae_work}
+        onChange={(e) => handleChange("uae_work", e.target.value)}>
+          <option value='no'>Нет</option>
+          <option value='yes'>Да</option>
         </select>
       </label>
       <br />
 
       <label>
       Бахрейн
-        <select>
-          <option>Нет</option>
-          <option>Да</option>
+        <select
+        value={formData.bahrain_work}
+        onChange={(e) => handleChange("bahrain_work", e.target.value)}>
+          <option value='no'>Нет</option>
+          <option value='yes'>Да</option>
         </select>
       </label>
       <br />
 
       <label>
       Оман
-        <select>
-          <option>Нет</option>
-          <option>Да</option>
+        <select
+        value={formData.oman_work}
+        onChange={(e) => handleChange("oman_work", e.target.value)}>
+          <option value='no'>Нет</option>
+          <option value='yes'>Да</option>
         </select>
       </label>
       <br />
@@ -537,6 +635,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       Сертификат/степень оброзования:
         <input
           type="text"
+          value={formData.degree}
+          onChange={(e) => handleChange("degree", e.target.value)}
         />
       </label>
       <br />
@@ -545,6 +645,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       Наименование колледжа или университета:
         <input
           type="text"
+          value={formData.university}
+          onChange={(e) => handleChange("university", e.target.value)}
         />
       </label>
       <br />
@@ -553,30 +655,29 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       Специализация:
         <input
           type="text"
+          value={formData.area_specific}
+          onChange={(e) => handleChange("area_specific", e.target.value)}
         />
       </label>
       <br />
 
       <label>
-      Начало оброзованияя:
+      Начало-конец оброзованияя:
         <input
           type="text"
+          value={formData.years}
+          onChange={(e) => handleChange("years", e.target.value)}
         />
       </label>
       <br />
 
-      <label>
-      Конец оброзованияя:
-        <input
-          type="text"
-        />
-      </label>
-      <br />
       <h3>Посещенные семинары/обучение/пройденные краткосрочные курсы:</h3>
       <label>
       Начало курса(семинара и т.д.):
         <input
           type="text"
+          value={formData.seminar_year}
+          onChange={(e) => handleChange("seminar_year", e.target.value)}
         />
       </label>
       <br />
@@ -584,6 +685,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       Название курса(семинара и т.д.):
         <input
           type="text"
+          value={formData.seminar_name}
+          onChange={(e) => handleChange("seminar_name", e.target.value)}
         />
       </label>
       <br />
@@ -591,6 +694,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       Период посещения курса(семинара и т.д.):
         <input
           type="text"
+          value={formData.seminar_period}
+          onChange={(e) => handleChange("seminar_period", e.target.value)}
         />
       </label>
       <br />
@@ -599,6 +704,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       Опишите пожалуйста:
         <input
           type="text"
+          value={formData.tattoo_piersing_discribe}
+          onChange={(e) => handleChange("tattoo_piersing_discribe", e.target.value)}
         />
       </label>
       <br />
@@ -615,6 +722,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       Должность:
         <input
           type="text"
+          value={formData.workPosition}
+          onChange={(e) => handleChange("workPosition", e.target.value)}
         />
       </label>
       <br />
@@ -623,6 +732,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       Обязанности:
         <input
           type="text"
+          value={formData.workResponsibilities}
+          onChange={(e) => handleChange("workResponsibilities", e.target.value)}
         />
       </label>
       <br />
@@ -631,6 +742,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       Название компании:
         <input
           type="text"
+          value={formData.workName}
+          onChange={(e) => handleChange("workName", e.target.value)}
         />
       </label>
       <br />
@@ -639,31 +752,31 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       Местоположение компании:
         <input
           type="text"
+          value={formData.workLocation}
+          onChange={(e) => handleChange("workLocation", e.target.value)}
         />
       </label>
       <br />
 
       <label>
-      Дата начало работы:
+      Дата начало-конца работы:
         <input
           type="text"
+          value={formData.workTime}
+          onChange={(e) => handleChange("workTime", e.target.value)}
         />
       </label>
       <br />
 
-      <label>
-      Дата конца работы:
-        <input
-          type="text"
-        />
-      </label>
-      <br />
+
 
       <h3>Компьютерные программы, с которыми вы работаете:</h3>
 <label>
 Программы гостеприимства:
         <input
           type="text"
+          value={formData.host_program}
+          onChange={(e) => handleChange("host_program", e.target.value)}
         />
       </label>
       <br />
@@ -672,6 +785,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       Финансовые программы:
         <input
           type="text"
+          value={formData.finance_program}
+          onChange={(e) => handleChange("finance_program", e.target.value)}
         />
       </label>
       <br />
@@ -679,6 +794,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       Программы путешествий и бронирования:
         <input
           type="text"
+          value={formData.travel_program}
+          onChange={(e) => handleChange("travel_program", e.target.value)}
         />
       </label>
       <br />
@@ -687,6 +804,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       Программы графики и дизайна:
         <input
           type="text"
+          value={formData.graph_program}
+          onChange={(e) => handleChange("graph_program", e.target.value)}
         />
       </label>
       <br />
@@ -695,15 +814,27 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       Другое программное обеспечение:
         <input
           type="text"
+          value={formData.other_program}
+          onChange={(e) => handleChange("other_program", e.target.value)}
         />
       </label>
       <br />
-
+      <label>
       <h3>Наличие водительских прав</h3>
+      <select
+      value={formData.driver_license}
+      onChange={(e) => handleChange("driver_license", e.target.value)}
+        >
+           <option value='no'>Нет</option>
+          <option value='yes'>Да</option>
+        </select>
+      </label>
       <label>
       Категория:
         <input
           type="text"
+          value={formData.car_category}
+          onChange={(e) => handleChange("car_category", e.target.value)}
         />
       </label>
       <br />
@@ -729,6 +860,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <label>
         Уровень русского языка:
         <select
+        value={formData.russianLevel}
+        onChange={(e) => handleChange("russianLevel", e.target.value)}
         >
           <option value="">Выберите уровень</option>
           <option value="A1">A1</option>
@@ -746,12 +879,16 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       Дополнительный язык:
         <input
           type="text"
+          value={formData.otherLang}
+        onChange={(e) => handleChange("otherLang", e.target.value)}
         />
       </label>
       <br />
       <label>
         Уровень дополнительного языка:
         <select
+        value={formData.otherLevel}
+        onChange={(e) => handleChange("otherLevel", e.target.value)}
         >
           <option value="">Выберите уровень</option>
           <option value="A1">A1</option>
@@ -768,13 +905,15 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <label>
       <h3>Как вы о нас узнали?</h3>
         <select
+        value={formData.how_knaws}
+        onChange={(e) => handleChange("how_knaws", e.target.value)}
         >
           <option value="">Google поисковик</option>
-          <option value="A1">Facebook</option>
-          <option value="A2">Instagram</option>
-          <option value="B1">Vk.com</option>
-          <option value="B2">Рекомендация друзей</option>
-          <option value="C1">Другие источники поиска работы</option>
+          <option value="Facebook">Facebook</option>
+          <option value="Instagram">Instagram</option>
+          <option value="Vk">Vk.com</option>
+          <option value="Friends">Рекомендация друзей</option>
+          <option value="Other">Другие источники поиска работы</option>
         </select>
       </label>
       <br />
@@ -783,6 +922,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <h3>Предпочитаемая продолжительность работы</h3>
         <input
           type="text"
+          value={formData.job_sroke}
+        onChange={(e) => handleChange("job_sroke", e.target.value)}
         />
       </label>
       <br />
