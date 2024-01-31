@@ -3,6 +3,8 @@ import img1 from "./Images/photo1.jpg";
 import img2 from "./Images/photo2.jpg";
 import img3 from "./Images/photo3.jpg";
 import axios from "axios";
+import { useTranslation } from 'react-i18next';
+import i18n from './i18n'
 interface ResumeFormProps {
   onSubmit: (formData: FormData) => void;
 }
@@ -25,8 +27,8 @@ interface FormData {
   current_loc: string;
   nationality: string;
   citizenship: string;
-  travel_p: boolean;
-  covid_p: boolean;
+  travel_p: string;
+  covid_p: string;
 
   mobile: number;
   messenger: string;
@@ -120,8 +122,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
     current_loc: "",
     nationality: "",
     citizenship: "",
-    travel_p: false,
-    covid_p: false,
+    travel_p: "no",
+    covid_p: "no",
 
     mobile: 0,
     messenger: "",
@@ -232,9 +234,11 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
           handleChange("photo", imageUrl);
         } else {
           console.error("Ошибка при загрузке изображения");
+              alert(t('ImgError'));
         }
       } catch (error) {
-        console.error("Ошибка при загрузке изображения:", error);
+        alert(t('serverError'));
+        console.error("Сервер не отвечает, Зайдите через некоторое время:", error);
       }
     } else {
       handleChange("photo", null);
@@ -269,9 +273,11 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
           handleChange("photo2", imageUrl);
         } else {
           console.error("Ошибка при загрузке изображения");
-        }
+        alert(t('ImgError'));
+      }
       } catch (error) {
         console.error("Ошибка при загрузке изображения:", error);
+        alert(t('serverError'));
       }
     } else {
       handleChange("photo2", null);
@@ -306,9 +312,11 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
           handleChange("photo", imageUrl);
         } else {
           console.error("Ошибка при загрузке изображения");
-        }
+        alert(t('ImgError'));
+      }
       } catch (error) {
         console.error("Ошибка при загрузке изображения:", error);
+        alert(t('serverError'));
       }
     } else {
       handleChange("photo", null);
@@ -356,9 +364,11 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
               console.log("photoes", urls);
             } else {
               console.error("Ошибка при загрузке изображения");
+              alert(t('ImgError'));
+
             }
           } catch (error) {
-            console.error("Ошибка при загрузке изображения:", error);
+            console.error(t('serverError'), error);
           }
         } else {
           handleChange("photo", null);
@@ -373,6 +383,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
   const [addWork, setAddWork] = useState(1);
 
   const handleSubmit = async () => {
+
     if (formData.consent) {
       onSubmit(formData);
       try {
@@ -385,28 +396,48 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
         });
 
         if (response.ok) {
-          console.log("Данные успешно отправлены");
+        alert(t('Success_send'));
+        console.log("Данные успешно отправлены");
           // Можно добавить дополнительные действия после успешной отправки
         } else {
           console.error(
             "Можно обработать ошибку",
             "Ошибка при отправке данных"
           );
-          // Можно обработать ошибку, например, показать сообщение об ошибке пользователю
+        alert(t('serverError'));
+        // Можно обработать ошибку, например, показать сообщение об ошибке пользователю
         }
       } catch (error) {
+        alert(t('serverError'));
         console.error("Ошибка при отправке данных:", error);
       }
       console.log(formData);
     } else {
-      alert("Вы должны согласиться на обработку данных.");
+        alert(t('Confirmation'));
+        alert("Вы должны согласиться на обработку данных.");
     }
+  };
+
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const handleDateChange = (date: Date | null) => {
+    setSelectedDate(date);
+    if(date){
+    const formattedDate = date.toLocaleDateString('en-US');
+    console.log(formattedDate);
+    handleChange("birthDate", formattedDate)}
+  };
+  const { t } = useTranslation();
+  const changeLanguage = () => {
+    const newLanguage = i18n.language === 'ru' ? 'en' : 'ru';
+    i18n.changeLanguage(newLanguage);
   };
 
   return (
     <div className="resume-form">
+      <div className='lang'><h2>{t('Rezume')}</h2>
+      <button className="langB" onClick={changeLanguage}>{i18n.language.toUpperCase()}</button></div>
       <label>
-        ФИО:
+      {t('fullName')}:
         <input
           type="text"
           value={formData.fullName}
@@ -416,7 +447,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        Желаемая должность:
+      {t('desiredPosition')}
         <input
           type="text"
           value={formData.desiredPosition}
@@ -426,7 +457,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
       <div className="img_add">
         <label>
-          <p>Добавьте свое фото , по примеру данной картинки :</p>
+          <p>{t('photo')}:</p>
           <img src={img1} width={130} height={200} />
           <input type="file" accept="image/*" onChange={handleFileChange} />
         </label>
@@ -435,7 +466,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
 
       <div className="img_add">
         <label>
-          <p>Добавьте свое фото , по примеру данной картинки :</p>
+          <p>{t('photo')}:</p>
           <img src={img2} width={150} height={200} />
           <input type="file" accept="image/*" onChange={handleFileChange2} />
         </label>
@@ -444,7 +475,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
 
       <div className="img_add">
         <label>
-          <p>Добавьте свое фото , по примеру данной картинки :</p>
+          <p>{t('photo')}:</p>
           <img src={img3} width={130} height={250} />
           <input type="file" accept="image/*" onChange={handleFileChange3} />
         </label>
@@ -453,17 +484,19 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        Дата рождения:
+      {t('birthDate')}:<span className="red"
+>{t('formatehDate')}</span>        
         <input
           type="text"
           value={formData.birthDate}
           onChange={(e) => handleChange("birthDate", e.target.value)}
         />
+
       </label>
       <br />
 
       <label>
-        Страна рождения:
+      {t('birthPlaceCountry')}:
         <input
           type="text"
           value={formData.birthPlaceCountry}
@@ -473,7 +506,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        Город или поселок рождения:
+      {t('birthPlaceCity')}:
         <input
           type="text"
           value={formData.birthPlaceCity}
@@ -483,19 +516,19 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        Семейное положение:
+      {t('maritalStatus')}:
         <select
           value={formData.maritalStatus}
           onChange={(e) => handleChange("maritalStatus", e.target.value)}
         >
-          <option value={"married"}>Замужем</option>
-          <option value={"not_married"}>Незамужем</option>
+          <option value={"married"}>{t('married')}</option>
+          <option value={"not_married"}>{t('not_maried')}</option>
         </select>
       </label>
       <br />
 
       <label>
-        Наличие детей:
+      {t('children')}:
         <input
           type="text"
           value={formData.children}
@@ -505,7 +538,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        Рост:
+      {t('height')}:
         <input
           type="number"
           // value={formData.height}
@@ -516,7 +549,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        Вес:
+      {t('weight')}:
         <input
           type="number"
           // value={formData.weight}
@@ -527,7 +560,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        Город проживания:
+      {t('city_res')}:
         <input
           type="text"
           value={formData.city_res}
@@ -537,7 +570,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        Текущее местоположение:
+      {t('current_loc')}:
         <input
           type="text"
           value={formData.current_loc}
@@ -547,7 +580,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        Национальность:
+      {t('nationality')}:
         <input
           type="text"
           value={formData.nationality}
@@ -557,7 +590,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        Гражданство:
+      {t('citizenship')}:
         <input
           type="text"
           value={formData.citizenship}
@@ -567,35 +600,31 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        У вас есть заграничный паспорт?
+      {t('travel_p')}:
         <select
-          value="no"
-          onChange={(e) =>
-            handleChange("travel_p", e.target.value === "yes" ? true : false)
-          }
+          value={formData.travel_p}
+          onChange={(e) => handleChange("travel_p", e.target.value)}
         >
-          <option value="no">Нет</option>
-          <option value="yes">Да</option>
+          <option value="no">{t('no')}</option>
+          <option value="yes">{t('yes')}</option>
         </select>
       </label>
       <br />
 
       <label>
-        Ты получил COVID-19 вакцину?
+      {t('covid_p')}:
         <select
-          value="no"
-          onChange={(e) =>
-            handleChange("covid_p", e.target.value === "yes" ? true : false)
-          }
+          value={formData.covid_p}
+          onChange={(e) => handleChange("covid_p", e.target.value)}
         >
-          <option value="no">Нет</option>
-          <option value="yes">Да</option>
+          <option value="no">{t('no')}</option>
+          <option value="yes">{t('yes')}</option>
         </select>
       </label>
       <br />
 
       <label>
-        Номер мобильного телефона:
+      {t('mobile')}:
         <input
           type="number"
           // value={formData.mobile}
@@ -606,7 +635,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        Мессенджеры Whatsapp/viber/telegram:
+      {t('messenger')}:
         <input
           type="text"
           value={formData.messenger}
@@ -616,7 +645,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        E-mail адресс:
+        E-mail:
         <input
           type="text"
           value={formData.email}
@@ -664,9 +693,9 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
         />
       </label>
       <br />
-      <h3>Контактные данные родственника на случай чрезвычайной ситуации:</h3>
+      <h3>{t('rel_info')}:</h3>
       <label>
-        Имя:
+      {t('name')}:
         <input
           type="text"
           value={formData.rel_name}
@@ -676,7 +705,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        Кем он(а) вам приходится ?
+      {t('relationship')}:
         <input
           type="text"
           value={formData.relationship}
@@ -686,7 +715,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        Номер мобильного:
+      {t('mobile')}:
         <input
           type="number"
           placeholder="87776665544"
@@ -697,7 +726,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        Имя вашего отца:
+      {t('dad_name')}:
         <input
           type="text"
           value={formData.dad_name}
@@ -707,7 +736,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        Имя вашей матери:
+      {t('mom_name')}:
         <input
           type="text"
           value={formData.mom_name}
@@ -715,58 +744,58 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
         />
       </label>
       <br />
-      <h3>Предпочтительные страны для переезда и работы:</h3>
+      <h3>{t('preferCountry')}:</h3>
       <label>
-        Катар
+      {t('Katar')}
         <select
           value={formData.qatar_work}
           onChange={(e) => handleChange("qatar_work", e.target.value)}
         >
-          <option value="no">Нет</option>
-          <option value="yes">Да</option>
+          <option value="no">{t('no')}</option>
+          <option value="yes">{t('yes')}</option>
         </select>
       </label>
       <br />
 
       <label>
-        ОАЭ
+      {t('UAE')}
         <select
           value={formData.uae_work}
           onChange={(e) => handleChange("uae_work", e.target.value)}
         >
-          <option value="no">Нет</option>
-          <option value="yes">Да</option>
+          <option value="no">{t('no')}</option>
+          <option value="yes">{t('yes')}</option>
         </select>
       </label>
       <br />
 
       <label>
-        Бахрейн
+      {t('Bahrain')}
         <select
           value={formData.bahrain_work}
           onChange={(e) => handleChange("bahrain_work", e.target.value)}
         >
-          <option value="no">Нет</option>
-          <option value="yes">Да</option>
+          <option value="no">{t('no')}</option>
+          <option value="yes">{t('yes')}</option>
         </select>
       </label>
       <br />
 
       <label>
-        Оман
+      {t('Oman')}
         <select
           value={formData.oman_work}
           onChange={(e) => handleChange("oman_work", e.target.value)}
         >
-          <option value="no">Нет</option>
-          <option value="yes">Да</option>
+          <option value="no">{t('no')}</option>
+          <option value="yes">{t('yes')}</option>
         </select>
       </label>
       <br />
 
-      <h3>Образование</h3>
+      <h3>{t('Education')}</h3>
       <label>
-        Сертификат/степень оброзования:
+      {t('degree')}:
         <input
           type="text"
           value={formData.degree}
@@ -776,7 +805,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        Наименование колледжа или университета:
+      {t('university')}:
         <input
           type="text"
           value={formData.university}
@@ -786,7 +815,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        Специализация:
+        {t('specialization')}:
         <input
           type="text"
           value={formData.area_specific}
@@ -796,7 +825,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        Начало-конец оброзованияя:
+        {t('years')}:
         <input
           type="text"
           value={formData.years}
@@ -805,9 +834,9 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       </label>
       {addEducation ? (
         <>
-          <h3>Образование 2</h3>
+          <h3> {t('Education')} 2</h3>
           <label>
-            Сертификат/степень оброзования:
+          {t('degree')}:
             <input
               type="text"
               value={formData.degree2}
@@ -817,7 +846,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
           <br />
 
           <label>
-            Наименование колледжа или университета:
+          {t('university')}:
             <input
               type="text"
               value={formData.university2}
@@ -827,7 +856,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
           <br />
 
           <label>
-            Специализация:
+            {t('specialization')}:
             <input
               type="text"
               value={formData.area_specific2}
@@ -837,7 +866,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
           <br />
 
           <label>
-            Начало-конец оброзованияя:
+            {t('years')}я:
             <input
               type="text"
               value={formData.years2}
@@ -850,7 +879,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
             }}
             className="redBG"
           >
-            Убрать
+            {t('delete')}
           </button>
         </>
       ) : (
@@ -859,14 +888,14 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
             setAddEducation(true);
           }}
         >
-          Добавить еще
+          {t('add')}
         </button>
       )}
       <br />
 
-      <h3>Посещенные семинары/обучение/пройденные краткосрочные курсы:</h3>
+      <h3>{t('seminars_title')}:</h3>
       <label>
-        Начало курса(семинара и т.д.):
+      {t('seminar_year')}:
         <input
           type="text"
           value={formData.seminar_year}
@@ -875,7 +904,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       </label>
       <br />
       <label>
-        Название курса(семинара и т.д.):
+      {t('seminar_name')}:
         <input
           type="text"
           value={formData.seminar_name}
@@ -884,7 +913,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       </label>
       <br />
       <label>
-        Период посещения курса(семинара и т.д.):
+      {t('seminar_period')}:
         <input
           type="text"
           value={formData.seminar_period}
@@ -892,9 +921,9 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
         />
       </label>
       <br />
-      <h3>Есть ли у вас татуировки или пирсинг?</h3>
+      <h3>{t('Tattoo_title')}</h3>
       <label>
-        Опишите пожалуйста:
+      {t('tattoo_piersing_discribe')}:
         <input
           type="text"
           value={formData.tattoo_piersing_discribe}
@@ -906,7 +935,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
       <div className="img_add">
         <label>
-          <p>Добавьте свои фотографии пирсинга или татуировок:</p>
+          <p>{t('tattoo_photoes')}:</p>
           <input
             type="file"
             accept="image/*"
@@ -917,9 +946,9 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       </div>
       <br />
 
-      <h3>Опыт работы</h3>
+      <h3>{t('work_title')}</h3>
       <label>
-        Должность:
+        {t('workPosition')}:
         <input
           type="text"
           value={formData.workPosition}
@@ -929,7 +958,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        Обязанности:
+        {t('workResponsibilities')}:
         <input
           type="text"
           value={formData.workResponsibilities}
@@ -939,7 +968,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        Название компании:
+        {t('workName')}:
         <input
           type="text"
           value={formData.workName}
@@ -949,7 +978,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        Местоположение компании:
+        {t('workLocation')}:
         <input
           type="text"
           value={formData.workLocation}
@@ -959,7 +988,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        Дата начало-конца работы:
+        {t('workTime')}:
         <input
           type="text"
           value={formData.workTime}
@@ -968,9 +997,9 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       </label>
       {addWork >= 2 ? (
         <>
-          <h3>Опыт работы 2</h3>
+          <h3>{t('work_title')} 2</h3>
           <label>
-            Должность:
+            {t('workPosition')}:
             <input
               type="text"
               value={formData.workPosition2}
@@ -980,7 +1009,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
           <br />
 
           <label>
-            Обязанности:
+            {t('workResponsibilities')}:
             <input
               type="text"
               value={formData.workResponsibilities2}
@@ -992,7 +1021,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
           <br />
 
           <label>
-            Название компании:
+            {t('workName')}:
             <input
               type="text"
               value={formData.workName2}
@@ -1002,7 +1031,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
           <br />
 
           <label>
-            Местоположение компании:
+            {t('workLocation')}:
             <input
               type="text"
               value={formData.workLocation2}
@@ -1012,7 +1041,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
           <br />
 
           <label>
-            Дата начало-конца работы:
+            {t('workTime')}:
             <input
               type="text"
               value={formData.workTime2}
@@ -1026,7 +1055,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
               }}
               className="redBG"
             >
-              Убрать
+              {t('delete')}
             </button>
           ) : null}
         </>
@@ -1037,13 +1066,13 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
             setAddWork(addWork + 1);
           }}
         >
-          Добавить еще
+          {t('add')}
         </button>
       ) : (
         <>
-          <h3>Опыт работы 3</h3>
+          <h3>{t('work_title')} 3</h3>
           <label>
-            Должность:
+            {t('workPosition')}:
             <input
               type="text"
               value={formData.workPosition3}
@@ -1053,7 +1082,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
           <br />
 
           <label>
-            Обязанности:
+            {t('workResponsibilities')}:
             <input
               type="text"
               value={formData.workResponsibilities3}
@@ -1065,7 +1094,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
           <br />
 
           <label>
-            Название компании:
+            {t('workName')}:
             <input
               type="text"
               value={formData.workName3}
@@ -1075,7 +1104,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
           <br />
 
           <label>
-            Местоположение компании:
+            {t('workLocation')}:
             <input
               type="text"
               value={formData.workLocation3}
@@ -1085,7 +1114,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
           <br />
 
           <label>
-            Дата начало-конца работы:
+            {t('workTime')}:
             <input
               type="text"
               value={formData.workTime3}
@@ -1098,15 +1127,15 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
             }}
             className="redBG"
           >
-            Убрать
+            {t('delete')}
           </button>
         </>
       )}
       <br />
 
-      <h3>Компьютерные программы, с которыми вы работаете:</h3>
+      <h3>{t('programs_title')}</h3>
       <label>
-        Программы гостеприимства:
+      {t('host_program')}:
         <input
           type="text"
           value={formData.host_program}
@@ -1116,7 +1145,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        Финансовые программы:
+      {t('finance_program')}:
         <input
           type="text"
           value={formData.finance_program}
@@ -1125,7 +1154,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       </label>
       <br />
       <label>
-        Программы путешествий и бронирования:
+      {t('travel_program')}:
         <input
           type="text"
           value={formData.travel_program}
@@ -1135,7 +1164,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        Программы графики и дизайна:
+      {t('graph_program')}:
         <input
           type="text"
           value={formData.graph_program}
@@ -1145,7 +1174,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       <br />
 
       <label>
-        Другое программное обеспечение:
+      {t('other_program')}:
         <input
           type="text"
           value={formData.other_program}
@@ -1154,17 +1183,17 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       </label>
       <br />
       <label>
-        <h3>Наличие водительских прав</h3>
+        <h3>{t('driver_license')}</h3>
         <select
           value={formData.driver_license}
           onChange={(e) => handleChange("driver_license", e.target.value)}
         >
-          <option value="no">Нет</option>
-          <option value="yes">Да</option>
+          <option value="no">{t('no')}</option>
+          <option value="yes">{t('yes')}</option>
         </select>
       </label>
       <label>
-        Категория:
+      {t('car_category')}:
         <input
           type="text"
           value={formData.car_category}
@@ -1173,9 +1202,9 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       </label>
       <br />
 
-      <h3>Знание языков:</h3>
+      <h3>{t('lang_title')}</h3>
       <label>
-        Уровень английского языка:
+      {t('englishLevel')}:
         <select
           value={formData.englishLevel}
           onChange={(e) => handleChange("englishLevel", e.target.value)}
@@ -1186,12 +1215,12 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
           <option value="Intermediate">B2</option>
           <option value="Upper Intermediate">C1</option>
           <option value="Advanced">C2</option>
-          <option value="Native">Носитель</option>
+          <option value="Native">{t('fluent')}</option>
         </select>
       </label>
       <br />
       <label>
-        Уровень русского языка:
+      {t('russianLevel')}:
         <select
           value={formData.russianLevel}
           onChange={(e) => handleChange("russianLevel", e.target.value)}
@@ -1202,13 +1231,13 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
           <option value="Intermediate">B2</option>
           <option value="Upper Intermediate">C1</option>
           <option value="Advanced">C2</option>
-          <option value="Native">Носитель</option>
+          <option value="Native">{t('fluent')}</option>
         </select>
       </label>
       <br />
 
       <label>
-        Дополнительный язык:
+      {t('otherLang')}:
         <input
           type="text"
           value={formData.otherLang}
@@ -1217,7 +1246,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       </label>
       <br />
       <label>
-        Уровень дополнительного языка:
+      {t('otherLevel')}:
         <select
           value={formData.otherLevel}
           onChange={(e) => handleChange("otherLevel", e.target.value)}
@@ -1228,29 +1257,29 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
           <option value="Intermediate">B2</option>
           <option value="Upper Intermediate">C1</option>
           <option value="Advanced">C2</option>
-          <option value="Native">Носитель</option>
+          <option value="Native">{t('fluent')}</option>
         </select>
       </label>
       <br />
 
       <label>
-        <h3>Как вы о нас узнали?</h3>
+        <h3>{t('how_knaws')}</h3>
         <select
           value={formData.how_knaws}
           onChange={(e) => handleChange("how_knaws", e.target.value)}
         >
-          <option value="Google">Google поисковик</option>
+          <option value="Google">{t('Google')}</option>
           <option value="Facebook">Facebook</option>
           <option value="Instagram">Instagram</option>
           <option value="Vk">Vk.com</option>
-          <option value="Friends">Рекомендация друзей</option>
-          <option value="Other">Другие источники поиска работы</option>
+          <option value="Friends">{t('Friends')}</option>
+          <option value="Other">{t('Other')}</option>
         </select>
       </label>
       <br />
 
       <label>
-        <h3>Предпочитаемая продолжительность работы</h3>
+        <h3>{t('job_sroke')}</h3>
         <input
           type="text"
           value={formData.job_sroke}
@@ -1259,27 +1288,22 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       </label>
       <br />
 
-      <h3 className="red">Важная информация для кандидата:</h3>
+      <h3 className="red">{t('info1')}:</h3>
       <p>
         <span style={{ fontWeight: 600 }}>
-          Отправляя данную анкету, я даю согласие на обработку моих персональных
-          данных.
+        {t('info2')}
         </span>
         <br />
-        Я понимаю и согласен с тем, что агентство вправе отказать мне в
-        прохождении интервью с тем или иным работодателем, поскольку
-        представляет интересы последних по подбору персонала.
+        {t('info3')}
         <br />
-        Я понимаю и согласен с тем, что агентство может отказать мне в
-        дальнейшем сотрудничестве в следующих случаях:
+        {t('info4')}
         <br />
-        1. Отказ от должности и компании, в которую сначала давал (а) согласие
-        трудоустраиваться.
+        {t('info5')}
         <br />
-        2. Отказ после утверждения работодателем моей кандидатуры.
+        {t('info6')}
       </p>
       <div className="check">
-        <label style={{ fontWeight: 600 }}>Согласие на обработку данных:</label>
+        <label style={{ fontWeight: 600 }}>{t('confirm')}:</label>
         <input
           type="checkbox"
           checked={formData.consent}
@@ -1288,7 +1312,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       </div>
       <br />
 
-      <button onClick={handleSubmit}>Отправить</button>
+      <button onClick={handleSubmit}>{t('send')}</button>
     </div>
   );
 };
