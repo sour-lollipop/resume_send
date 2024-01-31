@@ -101,6 +101,7 @@ interface FormData {
   job_sroke: string;
   how_knaws: string;
   consent: boolean;
+  lang: string;
 }
 
 const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
@@ -196,6 +197,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
     job_sroke: "",
     how_knaws: "Google",
     consent: false,
+    lang:'ru'
   });
 
   const handleChange = (
@@ -430,6 +432,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
   const changeLanguage = () => {
     const newLanguage = i18n.language === 'ru' ? 'en' : 'ru';
     i18n.changeLanguage(newLanguage);
+    handleChange('lang', newLanguage);
   };
 
   return (
