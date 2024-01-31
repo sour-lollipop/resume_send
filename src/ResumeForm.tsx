@@ -383,8 +383,9 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
 
   const [addEducation, setAddEducation] = useState(false);
   const [addWork, setAddWork] = useState(1);
-
+  const[btnDissable,setBtnDissable]=useState(false);
   const handleSubmit = async () => {
+    setBtnDissable(true)
 
     if (formData.consent) {
       onSubmit(formData);
@@ -400,6 +401,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
         if (response.ok) {
         alert(t('Success_send'));
         console.log("Данные успешно отправлены");
+        setBtnDissable(false)
           // Можно добавить дополнительные действия после успешной отправки
         } else {
           console.error(
@@ -407,10 +409,12 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
             "Ошибка при отправке данных"
           );
         alert(t('serverError'));
+        setBtnDissable(false)
         // Можно обработать ошибку, например, показать сообщение об ошибке пользователю
         }
       } catch (error) {
         alert(t('serverError'));
+        setBtnDissable(false)
         console.error("Ошибка при отправке данных:", error);
       }
       console.log(formData);
@@ -1315,7 +1319,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
       </div>
       <br />
 
-      <button onClick={handleSubmit}>{t('send')}</button>
+      <button disabled={btnDissable? true: false} className={btnDissable? 'dissable': ''} onClick={handleSubmit}>{t('send')}</button>
     </div>
   );
 };
