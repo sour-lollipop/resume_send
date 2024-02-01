@@ -390,7 +390,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ onSubmit }) => {
     if (formData.consent) {
       onSubmit(formData);
       try {
-        const response = await fetch("http://localhost:8000/submit_resume", {
+        const response = await fetch("http://87.255.194.185:8000/submit_resume", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
